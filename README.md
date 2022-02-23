@@ -2,7 +2,7 @@
 
 This builds a simple python package to run quantum circuits.
 
-##Example
+## Example
 ```python
 import numpy
 import py_qip
