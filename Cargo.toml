@@ -1,0 +1,27 @@
+[package]
+name = "PyRustQIP"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "py_qip"
+crate-type = ["cdylib"]
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+
+[dependencies]
+qip = { git = "https://github.com/Renmusxd/RustQIP" }
+
+[dependencies.pyo3]
+version = "^0.15"
+features = ["extension-module"]
+
+[dependencies.numpy]
+version = "^0.15"
+
+[dependencies.rand]
+version = "^0.8"
+features = ["small_rng"]
