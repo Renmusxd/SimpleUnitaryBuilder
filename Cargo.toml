@@ -13,14 +13,14 @@ codegen-units = 1
 panic = "abort"
 
 [dependencies]
-qip = { git = "https://github.com/Renmusxd/RustQIP" }
+qip = "1.0.0-beta.1"
 
 [dependencies.pyo3]
-version = "^0.15"
+version = "^0.18"
 features = ["extension-module"]
 
 [dependencies.numpy]
-version = "^0.15"
+version = "^0.18"
 
 [dependencies.rand]
 version = "^0.8"

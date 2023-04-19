@@ -1,4 +1,5 @@
-use numpy::{c64, PyArray1, PyReadonlyArray2};
+use numpy::{PyArray1, PyArray2, PyReadonlyArray2};
+use numpy::ndarray::{Array2, Axis};
 use pyo3::exceptions::PyValueError;
 use pyo3::prelude::*;
 use qip::prelude::*;
@@ -25,10 +26,10 @@ impl Circuit {
 
     }
 
-    fn apply_unitary(
+    fn apply_gate(
         &mut self,
         indices: Vec<usize>,
-        matrix: PyReadonlyArray2<c64>,
+        matrix: PyReadonlyArray2<Complex<f64>>,
     ) -> PyResult<()> {
         let max_index = indices.iter().cloned().max().unwrap_or(0);
 
@@ -78,7 +79,7 @@ impl Circuit {
         &mut self,
         py: Python,
         initial_state: Option<Vec<(usize, bool)>>,
-    ) -> PyResult<Py<PyArray1<c64>>> {
+    ) -> PyResult<Py<PyArray1<Complex<f64>>>> {
         let (state, _) = match initial_state {
             None => self.builder.calculate_state(),
             Some(state) => self
@@ -89,6 +90,18 @@ impl Circuit {
                 })),
         };
         Ok(PyArray1::from_iter(py, state).to_owned())
+    }
+
+    fn get_circuit(
+        &mut self,
+        py: Python) -> PyResult<Py<PyArray2<Complex<f64>>>> {
+        let r = self.builder.merge_registers(self.qubits.iter_mut().map(|q| q.take().unwrap())).unwrap();
+        let mat = make_circuit_matrix(&mut self.builder, &r, |x| x.0);
+        let mut arr = Array2::zeros((1<<r.n(), 1<<r.n()));
+        arr.axis_iter_mut(Axis(0)).zip(mat.into_iter()).for_each(|(mut arr, mat)| {
+            arr.iter_mut().zip(mat.into_iter()).for_each(|(x, m)| *x = m);
+        });
+        Ok(PyArray2::from_owned_array(py, arr).to_owned())
     }
 }
 
