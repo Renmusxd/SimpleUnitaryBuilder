@@ -12,11 +12,11 @@ b = py_qip.Circuit(qubits=10)
 
 # Queue an X gate to qubit 0
 xgate = numpy.array([[0,1],[1,0]], dtype=numpy.complex128)
-b.apply_unitary([0], xgate)
+b.apply_gate([0], xgate)
 
 # And an CX to [9,0]
 cxgate = numpy.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]], dtype=numpy.complex128)
-b.apply_unitary([9,0], cxgate)
+b.apply_gate([9,0], cxgate)
 
 # Run the circuit and get the state.
 # Low index qubits are the most significant bits in the state.
